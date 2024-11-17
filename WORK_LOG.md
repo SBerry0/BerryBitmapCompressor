@@ -1,9 +1,9 @@
-Name: YOUR NAME HERE
+Name: Sohum Berry
 
-| Date    |  Time  |                                     Update |
-|:--------|:------:|-------------------------------------------:|
-| April 5 | 9-10pm | I tried to write abstract, efficient code. |
-|         |        |                                            |
+| Date    |     Time      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         Update |
+|:--------|:-------------:|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| Nov. 15 | 10:15-11:00am | First I spent some time to figure out what the mystery was (it's a duck). Then I tried to do something with how many consecutive numbers there are. I was going to do something like have the first bit of a group of data being 0 or 1, depending on if it's a streak of 0s or 1s. Then the next few bits would represent how many in a row there are. Instead I did something a little different, where I am trying to only write out the position of each 1, which does not work right now, but it's not looking promising. |
+| Nov. 16 | 11:30-12:00am |                                                                                                                                                                                                                                                                         I decided to continue with my initial approach, only storing the positions of the 1's, but this time I also stored the streaks of it to hopefully lower the size. I think I'm on the right track now, but I am running into a runtime error right now. |
 
 
 To add a new row to the table, click into a cell and then hit shift-enter.
