@@ -33,7 +33,10 @@ public class BitmapCompressor {
      */
     public static void compress() {
 //        String s = BinaryStdIn.readString();
-        String s = BinaryStdIn.readString();
+        String s = "";
+        while (!BinaryStdIn.isEmpty()) {
+            s += (BinaryStdIn.readBoolean() ? '1' : '0');
+        }
         short n = (short) s.length();
         // Write out the length of the string using 16 bits. No need for all 32, only positive values are needed.
         BinaryStdOut.write(n, 16);
@@ -42,8 +45,8 @@ public class BitmapCompressor {
         short trueStreak = 0;
         short trueStreakStart = 0;
 
-        // Write out each character/nucleotide as two bits
         for (int i = 0; i < n; i++) {
+//            System.out.println(s.charAt(i));
             if (s.charAt(i) == '1') {
                 if (trueStreak == 0) {
                     trueStreakStart = pos;
@@ -88,9 +91,13 @@ public class BitmapCompressor {
      */
     public static void expand() {
         short length = BinaryStdIn.readShort();
+//        System.out.println(length);
+        BinaryStdOut.write(length);
+//        BinaryStdOut.write(BinaryStdIn.readString());
         short posTrue;
         int pos = 0;
         while (pos < length) {
+//            System.out.println(pos + ", " + length);
             posTrue = BinaryStdIn.readShort();
             while (pos < posTrue) {
                 BinaryStdOut.write(0, 1);
