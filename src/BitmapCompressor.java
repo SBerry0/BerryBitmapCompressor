@@ -37,29 +37,27 @@ public class BitmapCompressor {
         while (!BinaryStdIn.isEmpty()) {
             s += (BinaryStdIn.readBoolean() ? '1' : '0');
         }
-        short n = (short) s.length();
+        int n = s.length();
         // Write out the length of the string using 16 bits. No need for all 32, only positive values are needed.
         BinaryStdOut.write(n, 16);
 
-        short pos = 0;
         short trueStreak = 0;
-        short trueStreakStart = 0;
+        int trueStreakStart = 0;
 
         for (int i = 0; i < n; i++) {
 //            System.out.println(s.charAt(i));
             if (s.charAt(i) == '1') {
                 if (trueStreak == 0) {
-                    trueStreakStart = pos;
+                    trueStreakStart = i;
                 }
                 trueStreak++;
             } else {
                 if (trueStreak > 0) {
                     BinaryStdOut.write(trueStreakStart, 16);
-                    BinaryStdOut.write(trueStreak, 5);
+                    BinaryStdOut.write(trueStreak, 8);
                     trueStreak = 0;
                 }
             }
-            pos ++;
         }
 
 //        int streakFalse = 0;
@@ -92,23 +90,41 @@ public class BitmapCompressor {
     public static void expand() {
         short length = BinaryStdIn.readShort();
 //        System.out.println(length);
-        BinaryStdOut.write(length);
+//        BinaryStdOut.write(length);
 //        BinaryStdOut.write(BinaryStdIn.readString());
-        short posTrue;
         int pos = 0;
-        while (pos < length) {
-//            System.out.println(pos + ", " + length);
-            posTrue = BinaryStdIn.readShort();
-            while (pos < posTrue) {
+        while (!BinaryStdIn.isEmpty()) {
+            short trueStart = BinaryStdIn.readShort();
+            int trueLength = BinaryStdIn.readInt(8);
+            while (pos < trueStart) {
                 BinaryStdOut.write(0, 1);
                 pos++;
             }
-            int posStreak = BinaryStdIn.readInt(5);
-            for (int i = 0; i < posStreak; i++) {
+            for (int i = 0; i < trueLength; i++) {
                 BinaryStdOut.write(1, 1);
                 pos++;
             }
         }
+        for (int i = pos; i < length; i++) {
+            BinaryStdOut.write(0, 1);
+        }
+
+
+
+
+//        while (pos < length) {
+////            System.out.println(pos + ", " + length);
+//            posTrue = BinaryStdIn.readShort();
+//            while (pos < posTrue) {
+//                BinaryStdOut.write(0, 1);
+//                pos++;
+//            }
+//            int posStreak = BinaryStdIn.readInt(8);
+//            for (int i = 0; i < posStreak; i++) {
+//                BinaryStdOut.write(1, 1);
+//                pos++;
+//            }
+//        }
 
 
 //        while (!BinaryStdIn.isEmpty()) {
