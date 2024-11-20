@@ -60,26 +60,6 @@ public class BitmapCompressor {
             }
         }
 
-//        int streakFalse = 0;
-//        while (!BinaryStdIn.isEmpty()) {
-//            if (BinaryStdIn.readBoolean()) {
-//                if (trueStreak == 0) {
-//                    trueStreakStart = pos;
-//                }
-//                trueStreak++;
-////                streakFalse ++;
-////                BinaryStdOut.write(pos, 16);
-////                streakFalse = 0;
-//            } else {
-//                if (trueStreak > 0) {
-//                    BinaryStdOut.write(trueStreakStart, 16);
-//                    BinaryStdOut.write(trueStreak, 5);
-//                    trueStreak = 0;
-//                }
-//            }
-//            pos ++;
-//        }
-
         BinaryStdOut.close();
     }
 
@@ -89,9 +69,6 @@ public class BitmapCompressor {
      */
     public static void expand() {
         short length = BinaryStdIn.readShort();
-//        System.out.println(length);
-//        BinaryStdOut.write(length);
-//        BinaryStdOut.write(BinaryStdIn.readString());
         int pos = 0;
         while (!BinaryStdIn.isEmpty()) {
             short trueStart = BinaryStdIn.readShort();
@@ -105,38 +82,10 @@ public class BitmapCompressor {
                 pos++;
             }
         }
+        // To fill the rest of the file with 0s
         for (int i = pos; i < length; i++) {
             BinaryStdOut.write(0, 1);
         }
-
-
-
-
-//        while (pos < length) {
-////            System.out.println(pos + ", " + length);
-//            posTrue = BinaryStdIn.readShort();
-//            while (pos < posTrue) {
-//                BinaryStdOut.write(0, 1);
-//                pos++;
-//            }
-//            int posStreak = BinaryStdIn.readInt(8);
-//            for (int i = 0; i < posStreak; i++) {
-//                BinaryStdOut.write(1, 1);
-//                pos++;
-//            }
-//        }
-
-
-//        while (!BinaryStdIn.isEmpty()) {
-//            while (pos < posTrue) {
-//                BinaryStdOut.write(0, 1);
-//                pos++;
-//            }
-//            if (pos == posTrue) {
-//                BinaryStdOut.write(1, 1);
-//            }
-//            posTrue = BinaryStdIn.readShort();
-//        }
         BinaryStdOut.close();
     }
 
