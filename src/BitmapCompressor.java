@@ -16,6 +16,9 @@
  *  1240 bits
  ******************************************************************************/
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  *  The {@code BitmapCompressor} class provides static methods for compressing
  *  and expanding a binary bitmap input.
@@ -32,12 +35,16 @@ public class BitmapCompressor {
      * and writes the results to standard output.
      */
     public static void compress() {
-//        String s = BinaryStdIn.readString();
-        String s = "";
+//        trueEncoding();
+        runLengthEncoding();
+    }
+
+    public static void trueEncoding() {
+        Queue<Boolean> input = new LinkedList<Boolean>();
         while (!BinaryStdIn.isEmpty()) {
-            s += (BinaryStdIn.readBoolean() ? '1' : '0');
+            input.add(BinaryStdIn.readBoolean());
         }
-        int n = s.length();
+        int n = input.size();
         // Write out the length of the string using 16 bits. No need for all 32, only positive values are needed.
         BinaryStdOut.write(n, 16);
 
@@ -45,8 +52,7 @@ public class BitmapCompressor {
         int trueStreakStart = 0;
 
         for (int i = 0; i < n; i++) {
-//            System.out.println(s.charAt(i));
-            if (s.charAt(i) == '1') {
+            if (input.remove()) {
                 if (trueStreak == 0) {
                     trueStreakStart = i;
                 }
@@ -63,11 +69,59 @@ public class BitmapCompressor {
         BinaryStdOut.close();
     }
 
+    public static void runLengthEncoding() {
+        Queue<Boolean> input = new LinkedList<>();
+        while (!BinaryStdIn.isEmpty()) {
+            input.add(BinaryStdIn.readBoolean());
+        }
+        int n = input.size();
+
+        int i = 0;
+        int falseStreak = 0;
+        int trueStreak = 0;
+        while (i < n) {
+            while (!input.remove()) {
+                falseStreak++;
+                i++;
+            }
+            i++;
+
+            while (falseStreak > 255) {
+                BinaryStdOut.write(255, 8);
+                BinaryStdOut.write(0, 8);
+                falseStreak-=255;
+            }
+            BinaryStdOut.write(falseStreak, 8);
+            falseStreak = 0;
+
+            while (input.remove()) {
+                trueStreak++;
+                i++;
+            }
+            i++;
+
+            while (trueStreak > 255) {
+                BinaryStdOut.write(255, 8);
+                BinaryStdOut.write(0, 8);
+                trueStreak-=255;
+            }
+            BinaryStdOut.write(trueStreak, 8);
+            trueStreak=0;
+        }
+        BinaryStdOut.close();
+    }
+
     /**
      * Reads a sequence of bits from standard input, decodes it,
      * and writes the results to standard output.
      */
     public static void expand() {
+//        trueDecoding();
+        runLengthDecoding();
+    }
+
+
+    public static void trueDecoding() {
         short length = BinaryStdIn.readShort();
         int pos = 0;
         while (!BinaryStdIn.isEmpty()) {
@@ -85,6 +139,20 @@ public class BitmapCompressor {
         // To fill the rest of the file with 0s
         for (int i = pos; i < length; i++) {
             BinaryStdOut.write(0, 1);
+        }
+        BinaryStdOut.close();
+    }
+
+    public static void runLengthDecoding() {
+        while (!BinaryStdIn.isEmpty()) {
+            int falseLength = BinaryStdIn.readInt(8);
+            for (int i = 0; i < falseLength; i++) {
+                BinaryStdOut.write(0, 1);
+            }
+            int trueLength = BinaryStdIn.readInt(8);
+            for (int i = 0; i < trueLength; i++) {
+                BinaryStdOut.write(1, 1);
+            }
         }
         BinaryStdOut.close();
     }
