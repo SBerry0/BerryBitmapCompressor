@@ -34,9 +34,12 @@ public class BitmapCompressor {
      * Reads a sequence of bits from standard input, compresses them,
      * and writes the results to standard output.
      */
-    public static void compress() {
-//        trueEncoding();
-        runLengthEncoding();
+    public static void compress(int encodingType) {
+        if (encodingType == 0) {
+            trueEncoding();
+        } else if (encodingType == 1) {
+            runLengthEncoding();
+        }
     }
 
     public static void trueEncoding() {
@@ -70,21 +73,25 @@ public class BitmapCompressor {
     }
 
     public static void runLengthEncoding() {
-        Queue<Boolean> input = new LinkedList<>();
+        String s = "";
         while (!BinaryStdIn.isEmpty()) {
-            input.add(BinaryStdIn.readBoolean());
+            s += (BinaryStdIn.readBoolean() ? '1' : '0');
         }
-        int n = input.size();
+        int n = s.length();
 
         int i = 0;
         int falseStreak = 0;
         int trueStreak = 0;
+        boolean end = false;
         while (i < n) {
-            while (!input.remove()) {
+            while (s.charAt(i) == '0') {
                 falseStreak++;
                 i++;
+                if (i==n) {
+                    end = true;
+                    break;
+                }
             }
-            i++;
 
             while (falseStreak > 255) {
                 BinaryStdOut.write(255, 8);
@@ -94,11 +101,14 @@ public class BitmapCompressor {
             BinaryStdOut.write(falseStreak, 8);
             falseStreak = 0;
 
-            while (input.remove()) {
+            if (end) {
+                break;
+            }
+
+            while (s.charAt(i) == '1') {
                 trueStreak++;
                 i++;
             }
-            i++;
 
             while (trueStreak > 255) {
                 BinaryStdOut.write(255, 8);
@@ -115,9 +125,12 @@ public class BitmapCompressor {
      * Reads a sequence of bits from standard input, decodes it,
      * and writes the results to standard output.
      */
-    public static void expand() {
-//        trueDecoding();
-        runLengthDecoding();
+    public static void expand(int decodingType) {
+        if (decodingType == 0) {
+            trueDecoding();
+        } else if (decodingType == 1) {
+            runLengthDecoding();
+        }
     }
 
 
@@ -149,6 +162,9 @@ public class BitmapCompressor {
             for (int i = 0; i < falseLength; i++) {
                 BinaryStdOut.write(0, 1);
             }
+            if (BinaryStdIn.isEmpty()) {
+                break;
+            }
             int trueLength = BinaryStdIn.readInt(8);
             for (int i = 0; i < trueLength; i++) {
                 BinaryStdOut.write(1, 1);
@@ -164,8 +180,8 @@ public class BitmapCompressor {
      * @param args the command-line arguments
      */
     public static void main(String[] args) {
-        if      (args[0].equals("-")) compress();
-        else if (args[0].equals("+")) expand();
+        if      (args[0].equals("-")) compress(Integer.parseInt(args[1]));
+        else if (args[0].equals("+")) expand(Integer.parseInt(args[1]));
         else throw new IllegalArgumentException("Illegal command line argument");
     }
 }
